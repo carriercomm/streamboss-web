@@ -1,0 +1,67 @@
+{% extends "../templates/base.html" %}
+{% block title %}Create Stream{% endblock %}
+
+{% block headcss %}
+<!--<link rel='stylesheet' type='text/css' media='all' href='/static/css/phantom_lc.css' />-->
+{% endblock %}
+
+{% block headscripts %}
+<script type="text/javascript">
+<!--
+var csrf_token = "{{ csrf_token }}";
+// -->
+</script>
+
+<script type="text/javascript">
+  $(function() {
+
+    $("#create-stream-button").click(function() {
+      var stream_name = $("#stream-name-input").val();
+      if (!stream_name) {
+        
+        alert("You need a stream name");
+        return false;
+      }
+
+      var new_stream = '{"stream_name": "' + stream_name +'"}';
+
+      var req = $.ajax({
+        type: "POST",
+        url: "/api/dev/streams/",
+        data: new_stream,
+        dataType : "json",
+        success: function(msg) {
+          alert("Created stream " + stream_name);
+          $("#stream-name-input").val("");
+        },
+        error: function(msg) {
+          console.log(msg);
+        }
+      });
+
+      return false;
+    });
+  });
+</script>
+
+{% endblock %}
+{% block bodytag %}{% endblock %}
+{% block nimbus_body  %}
+    <div class="row tab-content tab-pane" id="create-stream">
+      <div class="col-md-12" >
+        <div class="panel panel-default">
+          <form>
+            <fieldset>
+              <legend>Create Stream</legend>
+              <label>Stream Name</label>
+              <input id="stream-name-input" type="text" placeholder="Create Stream">
+              <label class="checkbox">
+                <input type="checkbox">Archive Stream
+              </label>
+              <button id="create-stream-button" class="btn">Create</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endblock %}

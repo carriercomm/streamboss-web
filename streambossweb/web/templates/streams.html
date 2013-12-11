@@ -1,0 +1,136 @@
+{% extends "../templates/base.html" %}
+{% block title %}Streams{% endblock %}
+
+{% block headcss %}
+<!--<link rel='stylesheet' type='text/css' media='all' href='/static/css/phantom_lc.css' />-->
+{% endblock %}
+
+{% block headscripts %}
+<script type="text/javascript">
+<!--
+var csrf_token = "{{ csrf_token }}";
+// -->
+</script>
+{% endblock %}
+{% block bodytag %}{% endblock %}
+{% block nimbus_body  %}
+    <div class="row tab-content tab-pane" id="create-stream">
+      <div class="col-md-4" >
+        <div class="panel panel-default">
+          <div class="panel-heading"><h4 class="list-group-item-heading">Data Streams</h4></div>
+          <div class="list-group">
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Hyperspectral Camera Images</h5>
+              <p class="list-group-item-text">Spectra imagery of 128 narrow bands in the 374 to 1038 nm spectral range.
+              <!--<span href="#" class="more-info" data-container="body" data-content="More information about this thing goes here. This could be a pretty long description">...</span>--></p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Weather Underground Weather Data</h5>
+              <p class="list-group-item-text">Weather Underground Rapid Fire XML data</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">ANL Weather Data</h5>
+              <p class="list-group-item-text">Weather from the ANL flux tower</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">NOAA Weather Data</h5>
+              <p class="list-group-item-text">NOAA MADIS Surface Observations</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Amateur Radio Packet APRS Socket</h5>
+              <p class="list-group-item-text">Radio weather data</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Weather Thing</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading"><h4 class="list-group-item-heading">Operations</h4></div>
+          <div class="list-group">
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Hyperspectral Calibration</h5>
+              <p class="list-group-item-text">Process converting raw data values of the hyperspectral imagery to reflectance values</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Weather Quality Control</h5>
+              <p class="list-group-item-text">Weather time consistency and plausible value check</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Weather Generator</h5>
+              <p class="list-group-item-text">Short-term forecasts of relevant weather variables through machine learning algorithms</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">NDVI</h5>
+              <p class="list-group-item-text">Normalized Difference Vegetation Index. Spectral index corresponding to abundance of photosynthetic ally active biomass.</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Color Calibration</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Temperature Calibration</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Some Operation</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Some Operation</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <span class="glyphicon glyphicon-align-justify pull-right"></span>
+              <h5 class="list-group-item-heading">Some Operation</h5>
+              <p class="list-group-item-text">Description of the thing goes here</p>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading"><h4 class="list-group-item-heading">Live Stream Output</h4></div>
+          <div class="panel-body">
+            <img src="processed__vegindex.jpg" style="width: 300px">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="flowchart-head">
+      <div class="col-md-12">
+        <h2><span style="font-weight: 200;">New Stream</span>
+        <button type="button" class="pull-right btn btn-primary">Create Stream and Subscribe</button>
+        <button type="button" class="pull-right btn " style="margin-right: 10px">Create Stream</button>
+        <button type="button" class="pull-right btn" style="margin-right: 10px">Stream Information</button>
+        </h2>
+      </div>
+    </div>
+    <div class="row" id="flowchart">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body" id="flowchart-work-area" >
+            <img src="flow.png" style="width: 700px; text-align: center;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

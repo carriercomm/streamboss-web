@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}Stream Manager{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--
+    <link rel='stylesheet' type='text/css' href='/static/css/bootstrap.css' />
+    <link rel='stylesheet' type='text/css' href='/static/css/bootstrap-responsive768.css' />
+    <link rel='stylesheet' type='text/css' href='/static/css/bootstrap-tagmanager.css' />
+    <link rel='stylesheet' type='text/css' href='/static/css/phantom_common.css' />
+-->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #stream-nav { 
+        background: rgb(245, 245, 245);
+        border-bottom: 0px;
+        padding: 0px;
+      }
+
+      #stream-nav, #stream-nav ul { 
+        border-bottom: 0px;
+      }
+
+      #stream-nav * h3 {
+        margin: 0;
+        font-weight: normal;
+        color: rgb(51, 51, 51)
+      }
+
+      #create-stream .col-md-4 { 
+        height: 330px;
+        overflow: auto;
+        border-bottom: 4px solid rgb(221, 221, 221);
+      }
+
+      #create-stream * a.list-group-item {
+        cursor: default;
+      }
+
+      #create-stream * span.more-info {
+        cursor: pointer;
+      }
+
+      #flowchart-work-area {
+        background: #FAFAFA;
+        height: 230px;
+        padding-top: 80px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+
+      body {
+        margin: 20px;
+      }
+
+    </style>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+      $(function() {
+
+        $(".more-info").popover();
+      });
+    </script>
+    {% block headscripts %}{% endblock %}
+
+    {% block headcss %}{% endblock %}
+  </head>
+
+  <body {% block bodytag %}{% endblock %}>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default" id="stream-nav">
+          <ul class="nav nav-tabs">
+            <li><a data-toggle="tab" href="#register-stream"><h3>Register Stream</h3></a></li>
+            <li><a data-toggle="tab" href="#register-operation"><h3>Register Operation</h3></a></li>
+            <li class="active"><a data-toggle="tab" href="#create-stream"><h3>Create Stream</h3></a></li>
+            <li><a data-toggle="tab" href="#subscriptions"><h3>Subscriptions</h3></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {% block nimbus_body %}{% endblock %}
+  </body>
+</html>

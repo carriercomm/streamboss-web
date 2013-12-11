@@ -1,0 +1,119 @@
+{% extends "../templates/base.html" %}
+{% block title %}Register Operation{% endblock %}
+
+{% block headcss %}
+<!--<link rel='stylesheet' type='text/css' media='all' href='/static/css/phantom_lc.css' />-->
+{% endblock %}
+
+{% block headscripts %}
+<script type="text/javascript">
+<!--
+var csrf_token = "{{ csrf_token }}";
+// -->
+</script>
+
+<script type="text/javascript">
+  $(function() {
+
+    $("#register-operation-button").click(function() {
+      var operation_name = $("#operation-name-input").val();
+      if (!operation_name) {
+        
+        alert("You need an operation name");
+        return false;
+      }
+
+      var process_definition_id = $("#pd-id-input").val();
+      if (!process_definition_id) {
+        
+        alert("You need a process definition id");
+        return false;
+      }
+
+      var input_stream = $("#input-stream-input").val();
+      if (!input_stream) {
+        
+        alert("You need an input stream");
+        return false;
+      }
+
+      var output_stream = $("#output-stream-input").val();
+      if (!output_stream) {
+        
+        alert("You need an output stream");
+        return false;
+      }
+
+      var new_operation = JSON.stringify({
+          "operation_name": operation_name,
+          "process_definition_id": process_definition_id,
+          "input_stream": input_stream,
+          "output_stream": output_stream
+      });
+
+      var req = $.ajax({
+        type: "POST",
+        url: "/api/dev/operations/",
+        data: new_operation,
+        dataType : "json",
+        success: function(msg) {
+          alert("Created operation " + operation_name);
+          $("#operation-name-input").val("");
+          $("#pd-id-input").val("");
+          $("#input-stream-input").val("");
+          $("#output-stream-input").val("");
+        },
+        error: function(msg) {
+          console.log(msg);
+        }
+      });
+
+      return false;
+    });
+  });
+</script>
+
+{% endblock %}
+{% block bodytag %}{% endblock %}
+{% block nimbus_body  %}
+    <div class="row tab-content tab-pane" id="register-operation">
+      <div class="col-md-12" >
+        <div class="panel panel-default">
+          <form role="form">
+            <div class="form-horizontal">
+              <legend>Register Operation</legend>
+              <div class="form-group">
+                <label for="operation-name-input" class="col-sm-3 control-label">Operation Name</label>
+                <div class="col-sm-7">
+                  <input class="form-control" id="operation-name-input" type="text" placeholder="New Operation">
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="pd-id-input" class="col-sm-3 control-label">Process Definition ID</label>
+                <div class="col-sm-7">
+                  <input class="form-control" id="pd-id-input" type="text" placeholder="Definition ID">
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="input-stream-input" class="col-sm-3 control-label">Input Stream</label>
+                <div class="col-sm-7">
+                  <input class="form-control" id="input-stream-input" type="text" placeholder="Input Stream">
+                </div>
+              </div>
+              <div class="form-group">
+              <label for="output-stream-input" class="col-sm-3 control-label">Output Stream</label>
+                <div class="col-sm-7">
+                  <input class="form-control" id="output-stream-input" type="text" placeholder="Input Stream">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3 col-md-offset-3">
+                    <button id="register-operation-button" class="btn">Register Operation</button>
+                  </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endblock %}
