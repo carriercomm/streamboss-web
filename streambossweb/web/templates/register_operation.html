@@ -15,6 +15,8 @@ var csrf_token = "{{ csrf_token }}";
 <script type="text/javascript">
   $(function() {
 
+    $("#register-operation-tab").parent().addClass("active");
+
     $("#register-operation-button").click(function() {
       var operation_name = $("#operation-name-input").val();
       if (!operation_name) {
@@ -23,45 +25,36 @@ var csrf_token = "{{ csrf_token }}";
         return false;
       }
 
-      var process_definition_id = $("#pd-id-input").val();
-      if (!process_definition_id) {
+      var application = $("#application-input").val();
+      if (!application) {
         
-        alert("You need a process definition id");
+        alert("You need an application");
         return false;
       }
 
-      var input_stream = $("#input-stream-input").val();
-      if (!input_stream) {
+      var executable = $("#executable-input").val();
+      if (!executable) {
         
-        alert("You need an input stream");
-        return false;
-      }
-
-      var output_stream = $("#output-stream-input").val();
-      if (!output_stream) {
-        
-        alert("You need an output stream");
+        alert("You need an executable");
         return false;
       }
 
       var new_operation = JSON.stringify({
-          "operation_name": operation_name,
-          "process_definition_id": process_definition_id,
-          "input_stream": input_stream,
-          "output_stream": output_stream
+          "process_name": operation_name,
+          "application": application,
+          "exec": executable,
       });
 
       var req = $.ajax({
         type: "POST",
-        url: "/api/dev/operations/",
+        url: "/api/dev/processes/",
         data: new_operation,
         dataType : "json",
         success: function(msg) {
           alert("Created operation " + operation_name);
           $("#operation-name-input").val("");
-          $("#pd-id-input").val("");
-          $("#input-stream-input").val("");
-          $("#output-stream-input").val("");
+          $("#application-input").val("");
+          $("#executable-input").val("");
         },
         error: function(msg) {
           console.log(msg);
@@ -89,21 +82,15 @@ var csrf_token = "{{ csrf_token }}";
                 </div>
               </div>
               <div class="form-group">
-              <label for="pd-id-input" class="col-sm-3 control-label">Process Definition ID</label>
+              <label for="application-input" class="col-sm-3 control-label">Application VM Image</label>
                 <div class="col-sm-7">
-                  <input class="form-control" id="pd-id-input" type="text" placeholder="Definition ID">
+                  <input class="form-control" id="application-input" type="text" placeholder="Application">
                 </div>
               </div>
               <div class="form-group">
-              <label for="input-stream-input" class="col-sm-3 control-label">Input Stream</label>
+              <label for="executable-input" class="col-sm-3 control-label">Executable</label>
                 <div class="col-sm-7">
-                  <input class="form-control" id="input-stream-input" type="text" placeholder="Input Stream">
-                </div>
-              </div>
-              <div class="form-group">
-              <label for="output-stream-input" class="col-sm-3 control-label">Output Stream</label>
-                <div class="col-sm-7">
-                  <input class="form-control" id="output-stream-input" type="text" placeholder="Input Stream">
+                  <input class="form-control" id="executable-input" type="text" placeholder="Executable">
                 </div>
               </div>
               <div class="row">

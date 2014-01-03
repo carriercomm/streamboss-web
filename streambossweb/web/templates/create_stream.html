@@ -2,7 +2,11 @@
 {% block title %}Create Stream{% endblock %}
 
 {% block headcss %}
-<!--<link rel='stylesheet' type='text/css' media='all' href='/static/css/phantom_lc.css' />-->
+<style>
+    .outform {
+      padding: 15px;
+    }
+</style>
 {% endblock %}
 
 {% block headscripts %}
@@ -13,33 +17,150 @@ var csrf_token = "{{ csrf_token }}";
 </script>
 
 <script type="text/javascript">
+
+  "use strict";
+
+  var add_stream = function(stream_name, stream_nice_name, stream_description) {
+
+    stream_nice_name = typeof stream_nice_name !== 'undefined' ? stream_nice_name : stream_name;
+    stream_description = typeof stream_description !== 'undefined' ? stream_description : "Basic Stream";
+
+    var new_stream_element = '' +
+      '<a href="#" class="list-group-item" data-stream="' + stream_name + '">' +
+      '<span class="glyphicon glyphicon-align-justify pull-right"></span>' +
+      '<h5 class="list-group-item-heading">' + stream_nice_name + '</h5>' +
+      '<p class="list-group-item-text">' + stream_description + '</p>' +
+      '</a>';
+
+    $("#data-stream-list").append(new_stream_element);
+  };
+
+  var add_operation = function(operation_name, operation_nice_name, operation_description) {
+
+    operation_nice_name = typeof operation_nice_name !== 'undefined' ? operation_nice_name : operation_name;
+    operation_description = typeof operation_description !== 'undefined' ? operation_description : "Basic Operation";
+
+    var new_operation_element = '' +
+      '<a href="#" class="list-group-item" data-operation="' + operation_name + '" data-operation-name="' + operation_nice_name + '">' +
+      '<span class="glyphicon glyphicon-align-justify pull-right"></span>' +
+      '<h5 class="list-group-item-heading">' + operation_nice_name + '</h5>' +
+      '<p class="list-group-item-text">' + operation_description + '</p>' +
+      '</a>';
+
+    $("#data-operation-list").append(new_operation_element);
+  };
+
   $(function() {
 
-    $("#create-stream-button").click(function() {
-      var stream_name = $("#stream-name-input").val();
-      if (!stream_name) {
-        
-        alert("You need a stream name");
-        return false;
-      }
+    $("#create-stream-tab").parent().addClass("active");
 
-      var new_stream = '{"stream_name": "' + stream_name +'"}';
+    $("#data-stream-list").on("click", "a", function() {
+
+      $(this).siblings().removeClass("active");
+      $(".flowchart-instream").remove();
+      $(this).addClass("active");
+
+      var stream_name = $(this).data("stream");
+      $("#flowchart-work-area").append("<button class='btn btn-default btn-lg flowchart-instream'>" + stream_name + "</button>");
+      $("#flowchart-work-area").append("<span class='glyphicon glyphicon-chevron-right flowchart-instream'></span>");
+      return false;
+    });
+
+    $("#data-operation-list").on("click", "a", function() {
+
+      $(this).siblings().removeClass("active");
+      $(".flowchart-operation").remove();
+      $(this).addClass("active");
+
+      var operation_name = $(this).data("operation-name");
+      $("#flowchart-work-area").append("<button class='btn btn-default btn-lg flowchart-operation'>" + operation_name + "</button>");
+      $("#flowchart-work-area").append("<span class='glyphicon glyphicon-chevron-right flowchart-operation'></span>");
+      return false;
+    });
+
+    $("#output-stream-button").on("click", function() {
+
+      var output_name = $("#output-stream-input").val();
+      $(".flowchart-outstream").remove();
+      $("#flowchart-work-area").append("<button class='btn btn-default btn-lg flowchart-outstream'>" + output_name + "</button>");
+      return false;
+    });
+
+    $("#stream-name-label").on("click", function() {
+
+      var new_operation_name = prompt("New Stream Name");
+      $(this).text(new_operation_name);
+      $(this).data("operation-name", new_operation_name);
+    });
+
+    $("#create-stream-button").click(function() {
+
+      var stream_name = $("#data-stream-list a.active").data("stream");
+      var process_name = $("#data-operation-list a.active").data("operation");
+      var output_stream_name = $("#output-stream-input").val();
+      var new_operation_name = $("#stream-name-label").text();
+      console.log(stream_name + " " + process_name + " " + output_stream_name + " " + new_operation_name);
+
+      var data = {
+        "operation_name": new_operation_name,
+        "process_definition_id": process_name,
+        "input_stream": stream_name,
+        "output_stream": output_stream_name,
+      };
 
       var req = $.ajax({
         type: "POST",
-        url: "/api/dev/streams/",
-        data: new_stream,
+        url: "/api/dev/operations/",
+        data: JSON.stringify(data),
         dataType : "json",
         success: function(msg) {
-          alert("Created stream " + stream_name);
-          $("#stream-name-input").val("");
+          alert("Created a new stream!");
         },
         error: function(msg) {
+          alert("Err Got " + msg);
           console.log(msg);
         }
       });
+    });
 
-      return false;
+
+    var req = $.ajax({
+      type: "GET",
+      url: "/api/dev/streams/",
+      dataType : "json",
+      success: function(streams) {
+        for (var stream_name in streams) {
+          add_stream(stream_name);
+        }  
+      },
+      error: function(msg) {
+        alert("Err Got " + msg);
+        console.log(msg);
+      }
+    });
+
+    var req = $.ajax({
+      type: "GET",
+      url: "/api/dev/processes/",
+      dataType : "json",
+      success: function(processes) {
+        console.log(processes);
+        for (var i=0; i<processes.length; i++) {
+          var process = processes[i];
+          var name = null;
+          if (process.definition.hasOwnProperty('process_name')) {
+            name = process.definition.process_name;
+          }
+          else {
+            name = "#" + process.id;
+          }
+          add_operation(process.id, name, "Apply '" + process.definition.exec + "' to stream");
+        }  
+      },
+      error: function(msg) {
+        alert("Err Got " + msg);
+        console.error(msg);
+      }
     });
   });
 </script>
@@ -48,19 +169,51 @@ var csrf_token = "{{ csrf_token }}";
 {% block bodytag %}{% endblock %}
 {% block nimbus_body  %}
     <div class="row tab-content tab-pane" id="create-stream">
-      <div class="col-md-12" >
-        <div class="panel panel-default">
-          <form>
-            <fieldset>
-              <legend>Create Stream</legend>
-              <label>Stream Name</label>
-              <input id="stream-name-input" type="text" placeholder="Create Stream">
-              <label class="checkbox">
-                <input type="checkbox">Archive Stream
-              </label>
-              <button id="create-stream-button" class="btn">Create</button>
-            </fieldset>
+      <div class="col-md-4" >
+        <div class="panel list-panel panel-default">
+          <div class="panel-heading">
+            <h4 class="list-group-item-heading">Data Streams</h4>
+          </div>
+          <div class="list-group" id="data-stream-list">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" >
+        <div class="panel list-panel panel-default">
+          <div class="panel-heading">
+            <h4 class="list-group-item-heading">Operations</h4>
+          </div>
+          <div class="list-group" id="data-operation-list">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" >
+        <div class="panel list-panel panel-default">
+          <div class="panel-heading">
+            <h4 class="list-group-item-heading">Output Stream</h4>
+          </div>
+          <form class="outform">
+            <input id="output-stream-input"><br><br>
+          <button class='btn btn-sm' id="output-stream-button">Set Output Stream</button>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="flowchart-head">
+      <div class="col-md-12">
+        <h2><span style="font-weight: 200;" id="stream-name-label">New Stream</span>
+          <!--<button type="button" class="pull-right btn btn-primary">Create Stream and Subscribe</button>-->
+        <button type="button" class="pull-right btn " style="margin-right: 10px" id="create-stream-button">Create Stream</button>
+        <!--<button type="button" class="pull-right btn" style="margin-right: 10px">Stream Information</button>-->
+        </h2>
+      </div>
+    </div>
+    <div class="row" id="flowchart">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body" id="flowchart-work-area" >
+          </div>
         </div>
       </div>
     </div>

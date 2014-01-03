@@ -6,6 +6,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 from streambossweb.web.client import StreamBossClient
+from streambossweb.web.process_registry_client import ProcessRegistryClient
 
 js_mimetype = "application/javascript"
 
@@ -13,6 +14,8 @@ js_mimetype = "application/javascript"
 def _get_client():
     return StreamBossClient()
 
+def _get_process_registry_client():
+    return ProcessRegistryClient()
 
 def has_all_required_params(params, content):
     for param in params:
@@ -26,6 +29,7 @@ def has_all_required_params(params, content):
 @require_http_methods(['GET'])
 def stream_resource(request, stream_name):
 
+    # TODO
     stream = {}
     h = HttpResponse(json.dumps(stream), mimetype=js_mimetype)
     return h
@@ -63,6 +67,49 @@ def streams(request):
         return h
 
     elif request.method == 'DELETE':
+        # TODO
+        pass
+
+@csrf_exempt
+@require_http_methods(['GET'])
+def process_resource(request, stream_name):
+
+    # TODO
+    stream = {}
+    h = HttpResponse(json.dumps(stream), mimetype=js_mimetype)
+    return h
+
+
+@csrf_exempt
+@require_http_methods(['GET', 'POST', 'DELETE'])
+def processes(request):
+
+    if request.method == 'GET':
+        pr = _get_process_registry_client()
+        processes = pr.get_processes()
+        h = HttpResponse(json.dumps(processes), mimetype=js_mimetype)
+        return h
+
+    elif request.method == 'POST':
+        pr = _get_process_registry_client()
+
+        try:
+            content = json.loads(request.body)
+        except:
+            msg = "Bad request (%s). No JSON." % request.body
+            return HttpResponseBadRequest(msg)
+
+        required_params = ['process_name', 'application', 'exec' ]
+        if not has_all_required_params(required_params, content):
+            return HttpResponseBadRequest("Bad request. Do not have all required parameters (%s)" % required_params)
+
+        pr.create_process(content['process_name'], content['application'], content['exec'])
+
+        h = HttpResponse(json.dumps({}), mimetype=js_mimetype)
+        return h
+
+    elif request.method == 'DELETE':
+        # TODO
         pass
 
 
